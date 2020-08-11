@@ -81,6 +81,17 @@ function create_folders {
   touch "$APP_NAME"/models/"$APP_NAME"/__init__.py
   mkdir -p "$APP_NAME"/views/"$APP_NAME"
   touch "$APP_NAME"/views/"$APP_NAME"/__init__.py
+  mkdir -p "$APP_NAME"/forms/"$APP_NAME"
+  touch "$APP_NAME"/forms/"$APP_NAME"/__init__.py
+}
+
+function set_aliases {
+  ALIASES_FILE=~/.`echo $SHELL | rev | cut -d '/' -f 1 | rev`rc
+  IS_ALIASES=`cat $ALIASES_FILE | grep "python manage.py"`
+  if [[ -z $IS_ALIASES ]]; then
+    STR="alias django='python manage.py'"
+    echo $STR >> "$ALIASES_FILE"
+  fi
 }
 
 function script_help {
@@ -108,10 +119,11 @@ fi
 I=0
 check_python;
 check_django;
-if [[ $2 == "project" ]]; then
-  @ create_project "$3"
-elif [[ $2 == "app" ]]; then
-  @ create_app "$3"
-fi
+#if [[ $2 == "project" ]]; then
+#  @ create_project "$3"
+#elif [[ $2 == "app" ]]; then
+#  @ create_app "$3"
+#fi
+set_aliases;
 
 
