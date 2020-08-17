@@ -103,6 +103,23 @@ function new() {
   esac
 }
 
+function migration {
+  python manage.py makemigrations
+  python manage.py migrate
+}
+
+function reset {
+  if [[ $2 == db || $2 == database ]]; then
+    rm db.sqlite3
+    find . -path "*/migrations/*.py" -not -name "__init__.py" -delete
+    find . -path "*/migrations/*.pyc"  -delete
+    migration;
+    seed;
+  else
+    printf "$YELLOW./django.sh reset <db/database>$RESET_COLOR\n"
+  fi
+}
+
 function seed {
   SEEDS=$(ls seeds | cut -d_ -f1)
   if [[ -z $2 ]]; then
@@ -133,8 +150,14 @@ case $1 in
   help)
     help;
     ;;
+  migration)
+    migration;
+    ;;
   seed)
     seed $@;
+    ;;
+  reset)
+    reset $@;
     ;;
   *)
     help $@;
