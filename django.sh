@@ -10,6 +10,7 @@ RESET_COLOR="\033[0m"
 RED="\033[0;31m"
 BOLD="\033[1m"
 
+
 function help() {
   printf "./django.sh in your project folder to use it\n
 - ./django.sh norme to check norm with pycodestyle\n
@@ -114,7 +115,9 @@ function reset {
     find . -path "*/migrations/*.py" -not -name "__init__.py" -delete
     find . -path "*/migrations/*.pyc"  -delete
     migration;
+    printf "/nRecreating superuser : \n"
     seed;
+    python manage.py createsuperuser;
   else
     printf "$YELLOW./django.sh reset <db/database>$RESET_COLOR\n"
   fi
