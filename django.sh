@@ -36,7 +36,7 @@ function norme() {
 function create_model() {
   init_fd=./$APP_NAME/models/__init__.py
   CLASS=${FILE::-9}
-  echo "from ."$(echo $PARENT_FOLDER | tr '/' '.')${FILE::-3}" import ${CLASS}" >> $init_fd
+  echo "from ."$(echo $PARENT_FOLDER | tr '/' '.')${FILE::-3}" import ${CLASS^}" >> $init_fd
   echo "from django.db import models
 
 
@@ -103,6 +103,23 @@ function new() {
   esac
 }
 
+function seed {
+  SEEDS=$(ls seeds | cut -d_ -f1)
+  if [[ -z $2 ]]; then
+    for SEED in $SEEDS; do
+      python manage.py loaddata seeds/"$SEED"_seed
+    done
+  else
+    for ARG in $@; do
+      for SEED in $SEEDS; do
+        if [[ $ARG == $SEED ]]; then
+          python manage.py loaddata seeds/"$SEED"_seed
+        fi
+      done
+    done
+  fi
+}
+
 case $1 in
   norme)
     norme;
@@ -115,6 +132,9 @@ case $1 in
     ;;
   help)
     help;
+    ;;
+  seed)
+    seed $@;
     ;;
   *)
     help $@;
